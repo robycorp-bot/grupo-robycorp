@@ -1,0 +1,17 @@
+# Dependências instaladas localmente
+node_modules/
+
+# Saída do build do Vite
+dist/
+
+# Arquivos locais do editor e sistema
+.DS_Store
+.vscode/
+!.vscode/extensions.json
+*.local
+
+# Logs do npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
