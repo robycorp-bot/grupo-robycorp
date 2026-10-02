@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import brandLogo from './assets/images/logo.png'
-import brandIcon from './assets/images/icone.png'
 import banner from './assets/images/banner.png'
-import mascot from './assets/images/mascote.png'
 import phoneImage from './assets/images/celular.png'
 import './styles.css'
 
@@ -12,39 +10,219 @@ const whatsapp = `https://wa.me/${phone}?text=${encodeURIComponent('Olá! Quero 
 
 function Icon({ name, size = 20 }) {
   const paths = {
-    arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>, menu: <><path d="M4 6h16M4 12h16M4 18h16" /></>, close: <><path d="m6 6 12 12M18 6 6 18" /></>,
-    code: <><path d="m8 9-3 3 3 3M16 9l3 3-3 3M14 5l-4 14" /></>, chart: <><path d="M4 19V5M4 19h16" /><path d="m7 15 4-4 3 2 5-6" /></>,
-    target: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /><path d="M12 2v2M22 12h-2M12 22v-2M2 12h2" /></>, message: <path d="M20 11.5a8.3 8.3 0 0 1-9 8.2 8.5 8.5 0 0 1-3.8-1.2L3 20l1.4-4A8.3 8.3 0 1 1 20 11.5Z" />,
+    arrow: <><path d="M5 12h14" /><path d="m13 6 6 6-6 6" /></>,
+    external: <><path d="M14 4h6v6" /><path d="m20 4-9 9" /><path d="M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6" /></>,
+    menu: <><path d="M4 7h16M4 12h16M4 17h16" /></>,
+    close: <><path d="m6 6 12 12M18 6 6 18" /></>,
+    code: <><path d="m8 9-3 3 3 3M16 9l3 3-3 3M14 5l-4 14" /></>,
+    chart: <><path d="M4 19V5M4 19h16" /><path d="m7 15 4-4 3 2 5-6" /></>,
+    target: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /><path d="M12 2v2M22 12h-2M12 22v-2M2 12h2" /></>,
+    workflow: <><rect x="3" y="4" width="7" height="6" rx="1" /><rect x="14" y="14" width="7" height="6" rx="1" /><path d="M10 7h4a2 2 0 0 1 2 2v5M7 10v4a2 2 0 0 0 2 2h5" /></>,
+    message: <path d="M20 11.5a8.3 8.3 0 0 1-9 8.2 8.5 8.5 0 0 1-3.8-1.2L3 20l1.4-4A8.3 8.3 0 1 1 20 11.5Z" />,
+    check: <path d="m5 12 4 4L19 6" />,
   }
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>
+  return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>
 }
+
+const services = [
+  {
+    number: '01', icon: 'code', title: 'Desenvolvimento digital',
+    text: 'Sites e soluções web rápidos, responsivos e desenhados para tornar cada interação mais simples.',
+    tags: ['Sites', 'Aplicações web', 'Integrações'],
+  },
+  {
+    number: '02', icon: 'workflow', title: 'Sistemas & automação',
+    text: 'Processos e ferramentas digitais que conectam as etapas do trabalho e ajudam seu negócio a ganhar fluidez.',
+    tags: ['Sistemas', 'Automação', 'Otimização'],
+  },
+  {
+    number: '03', icon: 'chart', title: 'Marketing & performance',
+    text: 'Estratégia digital apoiada em dados para ampliar sua presença e aproximar sua marca das pessoas certas.',
+    tags: ['Estratégia', 'Mídia paga', 'Dados'],
+  },
+]
+
+const steps = [
+  ['01', 'Entender', 'Começamos pelo seu momento, seus objetivos e o que está impedindo o próximo passo.'],
+  ['02', 'Construir', 'Definimos a solução e desenvolvemos cada etapa com clareza e colaboração.'],
+  ['03', 'Evoluir', 'Acompanhamos o que funciona e aprimoramos a experiência junto com o seu negócio.'],
+]
 
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+
   useEffect(() => {
-    const reveal = new IntersectionObserver(entries => entries.forEach(entry => entry.isIntersecting && entry.target.classList.add('shown')), { threshold: .12 })
-    document.querySelectorAll('.reveal').forEach(element => reveal.observe(element))
-    const onScroll = () => setScrolled(window.scrollY > 16)
-    window.addEventListener('scroll', onScroll)
-    return () => { reveal.disconnect(); window.removeEventListener('scroll', onScroll) }
+    const observer = 'IntersectionObserver' in window
+      ? new IntersectionObserver(
+        entries => entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
+          }
+        }),
+        { threshold: 0.12 },
+      )
+      : null
+    document.querySelectorAll('.reveal').forEach(element => {
+      if (observer) observer.observe(element)
+      else element.classList.add('is-visible')
+    })
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('scroll', onScroll)
+    }
   }, [])
-  const close = () => setMenuOpen(false)
-  const services = [['code', 'Tecnologia & Web', 'Sites rápidos, experiências que convertem e soluções pensadas para evoluir com o seu negócio.'], ['chart', 'Tráfego Pago', 'Campanhas inteligentes, leitura de dados e decisões focadas no que realmente importa: retorno.'], ['target', 'Consultoria Digital', 'Clareza para suas próximas decisões. Diagnóstico, estratégia e um plano que faz sentido.']]
+
+  const closeMenu = () => setMenuOpen(false)
+
   return <>
-    <header className={scrolled ? 'header header-scrolled' : 'header'}>
-      <a className="brand" href="#inicio" onClick={close}><img src={brandIcon} alt="" /><span>usuario.<b>senior</b></span></a>
-      <nav className={menuOpen ? 'nav nav-open' : 'nav'}><a onClick={close} href="#sobre">Sobre</a><a onClick={close} href="#solucoes">Soluções</a><a onClick={close} href="#essencia">Essência</a><a className="nav-contact" onClick={close} href="#contato">Vamos conversar <Icon name="arrow" size={16} /></a></nav>
-      <button className="menu" aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><Icon name={menuOpen ? 'close' : 'menu'} /></button>
+    <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
+    <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
+      <a className="brand" href="#inicio" onClick={closeMenu} aria-label="Robycorp — início">
+        <span className="brand-mark" aria-hidden="true">R</span>
+        <span className="brand-name">Robycorp<span className="brand-period">.</span></span>
+      </a>
+      <button
+        className="menu-toggle"
+        type="button"
+        aria-label={menuOpen ? 'Fechar menu' : 'Abrir menu'}
+        aria-expanded={menuOpen}
+        aria-controls="site-navigation"
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        <Icon name={menuOpen ? 'close' : 'menu'} />
+      </button>
+      <nav id="site-navigation" className={`site-nav${menuOpen ? ' is-open' : ''}`} aria-label="Navegação principal">
+        <a href="#solucoes" onClick={closeMenu}>Soluções</a>
+        <a href="#metodo" onClick={closeMenu}>Como trabalhamos</a>
+        <a href="#sobre" onClick={closeMenu}>Sobre a Robycorp</a>
+        <a className="nav-cta" href="#contato" onClick={closeMenu}>Vamos conversar <Icon name="arrow" size={16} /></a>
+      </nav>
     </header>
-    <main>
-      <section className="hero" id="inicio"><img className="hero-banner" src={banner} alt="" /><div className="hero-overlay" /><div className="grid-lines" /><div className="hero-copy"><p className="eyebrow"><span /> TECNOLOGIA COM PROPÓSITO</p><h1>Estratégia que<br /><em>acende</em> resultados.</h1><p className="hero-text">Tecnologia, tráfego pago e inteligência digital para empresas que não nasceram para passar despercebidas.</p><div className="hero-actions"><a className="button button-primary" href={whatsapp} target="_blank" rel="noreferrer">Falar no WhatsApp <Icon name="arrow" /></a><a className="text-link" href="#solucoes">Conheça o método <Icon name="arrow" size={17} /></a></div></div><img className="hero-mascot" src={mascot} alt="Mascote usuario.senior" /><div className="scroll-cue"><span /> ROLE PARA EXPLORAR</div></section>
-      <section className="intro section" id="sobre"><p className="eyebrow reveal"><span /> O QUE FAZEMOS</p><div className="intro-grid"><h2 className="reveal">Código, alcance<br />e <em>impacto real.</em></h2><div className="intro-content reveal"><p>Não entregamos apenas presença digital. Construímos sistemas de crescimento para transformar atenção em oportunidades — com visão técnica e olhar de negócio.</p><a href="#contato" className="text-link">Tire seu projeto do papel <Icon name="arrow" size={17} /></a></div></div></section>
-      <section className="services section" id="solucoes"><div className="section-top reveal"><div><p className="eyebrow"><span /> NOSSAS FRENTES</p><h2>Uma equipe.<br /><em>Várias alavancas.</em></h2></div><p>O digital precisa conversar entre si. Por isso, unimos estratégia, tecnologia e mídia em uma única direção.</p></div><div className="service-grid">{services.map(([icon, title, text], i) => <article className="service-card reveal" style={{ transitionDelay: `${i * 90}ms` }} key={title}><div className="service-number">0{i + 1}</div><div className="service-icon"><Icon name={icon} /></div><h3>{title}</h3><p>{text}</p><a href="#contato" aria-label={`Saiba mais sobre ${title}`}><Icon name="arrow" /></a></article>)}</div></section>
-      <section className="essence section" id="essencia"><div className="essence-art reveal"><img src={phoneImage} alt="Identidade visual usuario.senior" /></div><div className="essence-copy"><p className="eyebrow reveal"><span /> NOSSA ESSÊNCIA</p><h2 className="reveal">Por que estamos <em>aqui?</em></h2><p className="reveal">Porque há negócios incríveis que merecem ser encontrados. Estamos aqui para juntar boas ideias, tecnologia e coragem — e criar movimentos que deixam marca.</p><div className="pillars reveal"><div><h3>Visão</h3><p>Ser referência em tecnologia e produtos digitais, entregando com qualidade, clareza e compromisso com cada projeto.</p></div><div><h3>Missão</h3><p>Construir parcerias transparentes, transformar ideias em resultados e gerar impacto positivo por meio do nosso trabalho.</p></div><div><h3>Valores</h3><p>Honra, humildade, empatia e transparência.</p></div></div></div></section>
-      <section className="contact section" id="contato"><div className="contact-glow" /><img className="contact-mark" src={brandLogo} alt="" /><p className="eyebrow reveal"><span /> VAMOS COMEÇAR</p><h2 className="reveal">Seu próximo nível<br />começa em uma <em>conversa.</em></h2><p className="reveal">Conte um pouco sobre o que você quer construir. A gente encontra o melhor caminho juntos.</p><div className="contact-actions reveal"><a className="button button-primary" href={whatsapp} target="_blank" rel="noreferrer"><Icon name="message" /> Chamar no WhatsApp</a><a className="phone" href="tel:+5517997725254">(17) 99772-5254</a></div><div className="social reveal"><a href="https://www.instagram.com/lucasfarias.sph?igsh=Zmc1Y3hsbXpvbHh3" target="_blank" rel="noreferrer" aria-label="Instagram">IG</a><span>Instagram</span></div></section>
+
+    <main id="conteudo">
+      <section className="hero" id="inicio">
+        <div className="hero-grid" aria-hidden="true" />
+        <div className="hero-inner page-width">
+          <div className="hero-copy">
+            <p className="eyebrow"><span className="eyebrow-line" /> TECNOLOGIA COM PROPÓSITO</p>
+            <h1>Ideias fortes.<br /><span>Tecnologia que</span><br /><em>faz acontecer.</em></h1>
+            <p className="hero-description">A Robycorp conecta desenvolvimento e estratégia digital para transformar desafios do seu negócio em novas possibilidades.</p>
+            <div className="hero-actions">
+              <a className="button button-primary" href={whatsapp} target="_blank" rel="noreferrer">Conte sua ideia <Icon name="arrow" /></a>
+              <a className="button button-secondary" href="#solucoes">Conheça as soluções <span className="button-down">↓</span></a>
+            </div>
+            <div className="hero-note"><span className="note-dot" /> Do primeiro passo à próxima fase do seu negócio</div>
+          </div>
+          <div className="hero-visual" aria-label="Identidade visual da Robycorp">
+            <div className="visual-orbit orbit-one" />
+            <div className="visual-orbit orbit-two" />
+            <div className="visual-glow" />
+            <img src={brandLogo} alt="Robycorp — estratégia, código e propósito" fetchPriority="high" />
+            <div className="visual-label"><span className="label-indicator" /> DIGITAL BY DESIGN</div>
+            <div className="visual-coordinate">RC<span> / </span>001</div>
+          </div>
+        </div>
+        <div className="hero-bottom page-width">
+          <span>ESTRATÉGIA</span><i /> <span>TECNOLOGIA</span><i /> <span>CRESCIMENTO</span>
+          <a href="#solucoes" aria-label="Rolar para soluções">↓</a>
+        </div>
+      </section>
+
+      <section className="intro section-pad" id="sobre">
+        <div className="intro-inner page-width">
+          <div className="intro-heading reveal">
+            <p className="eyebrow"><span className="eyebrow-line" /> MAIS QUE DIGITAL</p>
+            <h2>O próximo passo<br />começa com <em>clareza.</em></h2>
+          </div>
+          <div className="intro-copy reveal">
+            <p className="intro-lead">Tecnologia só faz sentido quando aproxima você dos seus objetivos.</p>
+            <p>Por isso, a gente começa entendendo o que o seu negócio precisa. Depois, combinamos código, estratégia e execução para construir uma experiência digital que trabalha a favor de você.</p>
+            <a className="inline-link" href="#metodo">Conheça nosso jeito de trabalhar <Icon name="arrow" size={17} /></a>
+          </div>
+        </div>
+        <div className="intro-image page-width reveal">
+          <img src={banner} alt="Identidade Robycorp: tecnologia, programação, marketing digital e performance" loading="lazy" />
+          <div className="image-caption"><span>01 / VISÃO</span><p>Estratégia. Código. Propósito.</p></div>
+        </div>
+      </section>
+
+      <section className="services section-pad" id="solucoes">
+        <div className="page-width">
+          <div className="section-heading reveal">
+            <div><p className="eyebrow"><span className="eyebrow-line" /> O QUE FAZEMOS</p><h2>Uma parceria.<br /><em>Múltiplas soluções.</em></h2></div>
+            <p>Da presença digital à operação, criamos soluções conectadas aos desafios reais da sua empresa.</p>
+          </div>
+          <div className="service-grid">
+            {services.map(({ number, icon, title, text, tags }, index) => <article className="service-card reveal" style={{ transitionDelay: `${index * 100}ms` }} key={number}>
+              <div className="card-top"><span>{number}</span><span className="card-icon"><Icon name={icon} size={21} /></span></div>
+              <h3>{title}</h3>
+              <p>{text}</p>
+              <div className="service-tags">{tags.map(tag => <span key={tag}>{tag}</span>)}</div>
+              <a className="card-link" href="#contato" aria-label={`Converse com a Robycorp sobre ${title}`}><Icon name="arrow" /></a>
+            </article>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="method section-pad" id="metodo">
+        <div className="page-width method-layout">
+          <div className="method-intro reveal">
+            <p className="eyebrow"><span className="eyebrow-line" /> NOSSO PROCESSO</p>
+            <h2>Bom trabalho começa com <em>boas perguntas.</em></h2>
+            <p>Cada projeto tem seu próprio caminho. Nosso processo mantém tudo transparente, colaborativo e focado no que importa para você.</p>
+            <a className="button button-outline" href={whatsapp} target="_blank" rel="noreferrer">Comece uma conversa <Icon name="arrow" size={17} /></a>
+          </div>
+          <div className="steps">
+            {steps.map(([number, title, text], index) => <article className="step reveal" style={{ transitionDelay: `${index * 100}ms` }} key={number}>
+              <span className="step-number">{number}</span>
+              <div><h3>{title}</h3><p>{text}</p></div>
+              <Icon name="check" size={19} />
+            </article>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="about section-pad">
+        <div className="page-width about-layout">
+          <div className="about-art reveal"><img src={phoneImage} alt="Arte vertical da marca Robycorp, com lobo tecnológico e identidade azul" loading="lazy" /><span className="about-art-index">RC — DIGITAL STUDIO</span></div>
+          <div className="about-copy reveal">
+            <p className="eyebrow"><span className="eyebrow-line" /> SOBRE A ROBYCORP</p>
+            <h2>Do desafio ao digital.<br /><em>Juntos.</em></h2>
+            <p>A Robycorp é uma empresa de tecnologia que une pensamento estratégico e desenvolvimento digital. Trabalhamos lado a lado com empresas que querem organizar, evoluir e crescer com mais intenção.</p>
+            <p>Sem fórmulas prontas: construímos soluções com diálogo, cuidado e uma visão clara do que vem depois.</p>
+            <div className="about-values"><span><Icon name="check" size={16} /> Parceria próxima</span><span><Icon name="check" size={16} /> Tecnologia útil</span><span><Icon name="check" size={16} /> Evolução contínua</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="contact section-pad" id="contato">
+        <div className="contact-art" aria-hidden="true"><img src={banner} alt="" loading="lazy" /></div>
+        <div className="contact-content page-width reveal">
+          <p className="eyebrow"><span className="eyebrow-line" /> O PRÓXIMO PASSO É SEU</p>
+          <h2>Tem um desafio?<br /><em>Vamos conversar.</em></h2>
+          <p>Conte o que você precisa. A gente ajuda a encontrar o caminho e a tecnologia certos para tirar a ideia do papel.</p>
+          <a className="button button-primary" href={whatsapp} target="_blank" rel="noreferrer"><Icon name="message" /> Fale com a Robycorp <Icon name="arrow" /></a>
+          <span className="contact-phone">Ou ligue <a href="tel:+5517997725254">(17) 99772-5254</a></span>
+        </div>
+        <div className="contact-meta page-width"><span>ESTRATÉGIA <i /> CÓDIGO <i /> PROPÓSITO</span><span>ROBYCORP © {new Date().getFullYear()}</span></div>
+      </section>
     </main>
-    <footer><a className="brand" href="#inicio"><img src={brandIcon} alt="" /><span>usuario.<b>senior</b></span></a><p>© {new Date().getFullYear()} usuario.senior. Tecnologia com propósito.</p><a href="#inicio">Voltar ao topo ↑</a></footer><a className="floating-wa" href={whatsapp} target="_blank" rel="noreferrer" aria-label="Conversar no WhatsApp"><Icon name="message" /></a>
+
+    <footer className="site-footer">
+      <div className="footer-main page-width">
+        <a className="brand footer-brand" href="#inicio" aria-label="Robycorp — voltar ao início"><span className="brand-mark" aria-hidden="true">R</span><span className="brand-name">Robycorp<span className="brand-period">.</span></span></a>
+        <p>Tecnologia com propósito.<br />Feita para mover o que vem a seguir.</p>
+        <div className="footer-links"><a href="#solucoes">Soluções</a><a href="#metodo">Processo</a><a href={whatsapp} target="_blank" rel="noreferrer">WhatsApp <Icon name="external" size={14} /></a><a href="https://www.instagram.com/lucasfarias.sph?igsh=Zmc1Y3hsbXpvbHh3" target="_blank" rel="noreferrer">Instagram <Icon name="external" size={14} /></a></div>
+      </div>
+      <div className="footer-bottom page-width"><span>© {new Date().getFullYear()} Robycorp. Todos os direitos reservados.</span><a href="#inicio">Voltar ao topo ↑</a></div>
+    </footer>
+
+    <a className="floating-contact" href={whatsapp} target="_blank" rel="noreferrer" aria-label="Conversar com a Robycorp pelo WhatsApp"><Icon name="message" size={22} /></a>
   </>
 }
+
 createRoot(document.getElementById('root')).render(<App />)
