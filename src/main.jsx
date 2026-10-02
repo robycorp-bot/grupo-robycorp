@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client'
 import brandLogo from './assets/images/logo.png'
 import banner from './assets/images/banner.png'
 import phoneImage from './assets/images/celular.png'
+import googleBusinessImage from './assets/price/robycorp-google-meu-negocio.png'
+import adsWebsiteImage from './assets/price/robycorp-site-campanha-ads.png'
+import organicWebsiteImage from './assets/price/robycorp-site-organico.png'
+import socialMediaImage from './assets/price/robycorp-gestao-midias-sociais.png'
 import './styles.css'
 
 const phone = '5517997725254'
@@ -48,6 +52,80 @@ const steps = [
   ['03', 'Evoluir', 'Acompanhamos o que funciona e aprimoramos a experiência junto com o seu negócio.'],
 ]
 
+const offers = [
+  {
+    image: googleBusinessImage,
+    imageAlt: 'Oferta Robycorp de gestão de perfil do Google Meu Negócio, com descrição do serviço e valores',
+    category: 'Presença local',
+    title: 'Google Meu Negócio',
+    whatsappMessage: 'Olá! Tenho interesse na Gestão de Perfil do Google Meu Negócio da Robycorp.',
+    benefits: [
+      'Otimização completa e configuração estratégica do seu perfil',
+      'Monitoramento e resposta às avaliações dos clientes',
+      'Postagens e atualizações frequentes',
+      'Mais visibilidade e credibilidade nas buscas locais',
+    ],
+    prices: [
+      ['Valor inicial', 'R$ 700'],
+      ['Manutenção mensal', 'R$ 150'],
+    ],
+    note: 'Fale com a gente e leve seu negócio para o próximo nível.',
+  },
+  {
+    image: adsWebsiteImage,
+    imageAlt: 'Oferta Robycorp de criação de site e campanha de anúncios, com descrição do serviço e valores',
+    category: 'Performance e conversão',
+    title: 'Site + Campanha Ads',
+    whatsappMessage: 'Olá! Tenho interesse no pacote Site + Campanha Ads da Robycorp.',
+    benefits: [
+      'Criação de site profissional e otimizado',
+      'Configuração e gestão de campanhas (Google/Meta Ads)',
+      'Segmentação estratégica e otimização contínua',
+      'Investimento diário da campanha: a combinar no fechamento (varia de cliente para cliente)',
+    ],
+    prices: [
+      ['Valor inicial', 'R$ 1.350'],
+      ['Manutenção mensal', 'R$ 200'],
+    ],
+    note: 'Fale com a gente e descubra o investimento ideal para sua campanha.',
+  },
+  {
+    image: organicWebsiteImage,
+    imageAlt: 'Oferta Robycorp de criação de site orgânico, com descrição do serviço e valores',
+    category: 'Crescimento sustentável',
+    title: 'Site Orgânico',
+    whatsappMessage: 'Olá! Tenho interesse no projeto de Site Orgânico da Robycorp.',
+    benefits: [
+      'Estratégia de SEO focada em resultado orgânico',
+      'Trabalho gradual, com resultados de médio a longo prazo',
+      'Acompanhamento próximo entre agência e cliente',
+      'Parceria conjunta até o site ficar totalmente indexado',
+    ],
+    prices: [
+      ['Valor inicial', 'R$ 750'],
+      ['Valor mensal', 'R$ 750'],
+    ],
+    note: 'Um projeto construído em parceria, passo a passo, até o topo do Google.',
+  },
+  {
+    image: socialMediaImage,
+    imageAlt: 'Oferta Robycorp de gestão de mídias sociais, com descrição do serviço e valor mensal',
+    category: 'Instagram · TikTok · Facebook · Kwai',
+    title: 'Gestão de Mídias Sociais',
+    whatsappMessage: 'Olá! Tenho interesse no pacote de Gestão de Mídias Sociais da Robycorp.',
+    benefits: [
+      'Edição de vídeos, imagens e banners',
+      'Postagem diária em todas as redes',
+      'Atendimento 24h, com máxima agilidade',
+      'Nenhuma demanda do dia fica para o dia seguinte',
+    ],
+    prices: [
+      ['Pacote mensal', 'R$ 2.000'],
+    ],
+    note: 'O diferencial: agilidade total e presença constante nas suas redes.',
+  },
+]
+
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -82,7 +160,7 @@ function App() {
     <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
       <a className="brand" href="#inicio" onClick={closeMenu} aria-label="Robycorp — início">
-        <span className="brand-mark" aria-hidden="true">R</span>
+        <img className="brand-mark" src={brandLogo} alt="" aria-hidden="true" />
         <span className="brand-name">Robycorp<span className="brand-period">.</span></span>
       </a>
       <button
@@ -97,6 +175,7 @@ function App() {
       </button>
       <nav id="site-navigation" className={`site-nav${menuOpen ? ' is-open' : ''}`} aria-label="Navegação principal">
         <a href="#solucoes" onClick={closeMenu}>Soluções</a>
+        <a href="#planos" onClick={closeMenu}>Planos e valores</a>
         <a href="#metodo" onClick={closeMenu}>Como trabalhamos</a>
         <a href="#sobre" onClick={closeMenu}>Sobre a Robycorp</a>
         <a className="nav-cta" href="#contato" onClick={closeMenu}>Vamos conversar <Icon name="arrow" size={16} /></a>
@@ -168,6 +247,47 @@ function App() {
         </div>
       </section>
 
+      <section className="offers section-pad" id="planos">
+        <div className="page-width">
+          <div className="section-heading reveal">
+            <div>
+              <p className="eyebrow"><span className="eyebrow-line" /> SERVIÇOS ROBYCORP</p>
+              <h2>Soluções claras.<br /><em>Investimento transparente.</em></h2>
+            </div>
+            <p>Escolha o serviço ideal para o momento do seu negócio. Cada conversa pelo WhatsApp já começa com o produto que você selecionou.</p>
+          </div>
+          <div className="offer-grid">
+            {offers.map((offer, index) => <article className="offer-card reveal" style={{ transitionDelay: `${index * 80}ms` }} key={offer.title}>
+              <div className="offer-art">
+                <img src={offer.image} alt={offer.imageAlt} loading="lazy" />
+              </div>
+              <div className="offer-content">
+                <p className="offer-category">{offer.category}</p>
+                <h3>{offer.title}</h3>
+                <ul className="offer-benefits">
+                  {offer.benefits.map(benefit => <li key={benefit}><Icon name="check" size={16} /> <span>{benefit}</span></li>)}
+                </ul>
+                <div className={`offer-prices${offer.prices.length === 1 ? ' offer-prices-single' : ''}`}>
+                  {offer.prices.map(([label, price]) => <div className="offer-price" key={label}>
+                    <span>{label}</span>
+                    <strong>{price}</strong>
+                  </div>)}
+                </div>
+                <p className="offer-note">{offer.note}</p>
+                <a
+                  className="offer-cta"
+                  href={`https://wa.me/${phone}?text=${encodeURIComponent(offer.whatsappMessage)}`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Icon name="message" size={18} /> Conversar sobre este serviço <Icon name="arrow" size={17} />
+                </a>
+              </div>
+            </article>)}
+          </div>
+        </div>
+      </section>
+
       <section className="method section-pad" id="metodo">
         <div className="page-width method-layout">
           <div className="method-intro reveal">
@@ -214,7 +334,7 @@ function App() {
 
     <footer className="site-footer">
       <div className="footer-main page-width">
-        <a className="brand footer-brand" href="#inicio" aria-label="Robycorp — voltar ao início"><span className="brand-mark" aria-hidden="true">R</span><span className="brand-name">Robycorp<span className="brand-period">.</span></span></a>
+        <a className="brand footer-brand" href="#inicio" aria-label="Robycorp — voltar ao início"><img className="brand-mark" src={brandLogo} alt="" aria-hidden="true" /><span className="brand-name">Robycorp<span className="brand-period">.</span></span></a>
         <p>Tecnologia com propósito.<br />Feita para mover o que vem a seguir.</p>
         <div className="footer-links"><a href="#solucoes">Soluções</a><a href="#metodo">Processo</a><a href={whatsapp} target="_blank" rel="noreferrer">WhatsApp <Icon name="external" size={14} /></a><a href="https://www.instagram.com/lucasfarias.sph?igsh=Zmc1Y3hsbXpvbHh3" target="_blank" rel="noreferrer">Instagram <Icon name="external" size={14} /></a></div>
       </div>
