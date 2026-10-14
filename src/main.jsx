@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import brandLogo from './assets/images/logo.png'
 import banner from './assets/images/banner.png'
@@ -26,6 +26,85 @@ function Icon({ name, size = 20 }) {
     check: <path d="m5 12 4 4L19 6" />,
   }
   return <svg aria-hidden="true" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">{paths[name]}</svg>
+}
+
+function MatrixRain() {
+  const canvasRef = useRef(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const context = canvas.getContext('2d')
+    let animationFrame
+    let columns = []
+    const chars = '01アイウエオカキクケコサシスセソ<>/{}[]+-=AI://'
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    const resize = () => {
+      const density = window.innerWidth < 700 ? 34 : 25
+      const scale = window.devicePixelRatio || 1
+      canvas.width = window.innerWidth * scale
+      canvas.height = window.innerHeight * scale
+      canvas.style.width = `${window.innerWidth}px`
+      canvas.style.height = `${window.innerHeight}px`
+      context.setTransform(scale, 0, 0, scale, 0, 0)
+      columns = Array.from({ length: Math.ceil(window.innerWidth / density) }, (_, index) => ({
+        x: index * density + Math.random() * 10,
+        y: Math.random() * window.innerHeight,
+        speed: 0.45 + Math.random() * 1.3,
+        length: 5 + Math.floor(Math.random() * 14),
+        alpha: 0.08 + Math.random() * 0.22,
+      }))
+    }
+
+    const render = () => {
+      context.fillStyle = 'rgba(5, 10, 18, 0.12)'
+      context.fillRect(0, 0, window.innerWidth, window.innerHeight)
+      context.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace'
+      columns.forEach(column => {
+        for (let index = 0; index < column.length; index += 1) {
+          const char = chars[Math.floor(Math.random() * chars.length)]
+          const y = column.y - index * 15
+          if (y > 0 && y < window.innerHeight) {
+            context.fillStyle = `rgba(82, 196, 255, ${column.alpha * (1 - index / column.length)})`
+            context.fillText(char, column.x, y)
+          }
+        }
+        column.y += column.speed
+        if (column.y - column.length * 15 > window.innerHeight) column.y = -20
+      })
+      if (!prefersReducedMotion) animationFrame = requestAnimationFrame(render)
+    }
+
+    resize()
+    render()
+    window.addEventListener('resize', resize)
+    return () => { cancelAnimationFrame(animationFrame); window.removeEventListener('resize', resize) }
+  }, [])
+
+  return <canvas className="matrix-rain" ref={canvasRef} aria-hidden="true" />
+}
+
+function MatrixLoader({ onComplete }) {
+  useEffect(() => {
+    const timer = window.setTimeout(onComplete, 3600)
+    return () => window.clearTimeout(timer)
+  }, [onComplete])
+
+  return <div className="matrix-loader" role="status" aria-label="Carregando experiência Robycorp">
+    <div className="loader-rain" aria-hidden="true">{Array.from({ length: 22 }, (_, index) => <span key={index}>0101<br />AI<br />1010<br />{index % 2 ? 'Ξ' : '01'}</span>)}</div>
+    <div className="loader-stage" aria-hidden="true">
+      <div className="loader-horizon" />
+      <div className="loader-glass"><span className="glass-panel glass-panel-left" /><span className="glass-panel glass-panel-right" /><span className="glass-hole" /></div>
+      <div className="loader-hand loader-hand-left"><i /><b /><span /><em /></div>
+      <div className="loader-hand loader-hand-right"><i /><b /><span /><em /></div>
+      <div className="loader-robot"><span className="robot-antenna" /><span className="robot-head"><i /><i /></span><span className="robot-body"><b /><b /></span><span className="robot-arm robot-arm-left" /><span className="robot-arm robot-arm-right" /></div>
+      <div className="loader-projectile"><span /><i /><b /></div>
+      <div className="impact-flash" />
+      <div className="glass-cracks"><i /><i /><i /><i /><i /><i /><i /><i /></div>
+    </div>
+    <div className="loader-copy"><span className="loader-kicker">ROBYCORP // SYSTEM 01</span><strong>CONNECTION ESTABLISHED<span className="blink">_</span></strong><span className="loader-progress"><i /></span><small>digital experience initializing</small></div>
+    <div className="loader-scanline" aria-hidden="true" />
+  </div>
 }
 
 const services = [
@@ -129,6 +208,7 @@ const offers = [
 function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const observer = 'IntersectionObserver' in window
@@ -154,9 +234,16 @@ function App() {
     }
   }, [])
 
+  useEffect(() => {
+    document.body.classList.toggle('is-loading', loading)
+    return () => document.body.classList.remove('is-loading')
+  }, [loading])
+
   const closeMenu = () => setMenuOpen(false)
 
   return <>
+    {loading && <MatrixLoader onComplete={() => setLoading(false)} />}
+    <MatrixRain />
     <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
     <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
       <a className="brand" href="#inicio" onClick={closeMenu} aria-label="Robycorp — início">
@@ -236,7 +323,7 @@ function App() {
             <p>Da presença digital à operação, criamos soluções conectadas aos desafios reais da sua empresa.</p>
           </div>
           <div className="service-grid">
-            {services.map(({ number, icon, title, text, tags }, index) => <article className="service-card reveal" style={{ transitionDelay: `${index * 100}ms` }} key={number}>
+            {services.map(({ number, icon, title, text, tags }, index) => <article className="service-card reveal float-card" style={{ transitionDelay: `${index * 100}ms`, '--float-delay': `${index * -1.2}s` }} key={number}>
               <div className="card-top"><span>{number}</span><span className="card-icon"><Icon name={icon} size={21} /></span></div>
               <h3>{title}</h3>
               <p>{text}</p>
@@ -257,7 +344,7 @@ function App() {
             <p>Escolha o serviço ideal para o momento do seu negócio. Cada conversa pelo WhatsApp já começa com o produto que você selecionou.</p>
           </div>
           <div className="offer-grid">
-            {offers.map((offer, index) => <article className="offer-card reveal" style={{ transitionDelay: `${index * 80}ms` }} key={offer.title}>
+            {offers.map((offer, index) => <article className="offer-card reveal float-card" style={{ transitionDelay: `${index * 80}ms`, '--float-delay': `${index * -.9}s` }} key={offer.title}>
               <div className="offer-art">
                 <img src={offer.image} alt={offer.imageAlt} loading="lazy" />
               </div>
