@@ -78,8 +78,8 @@ function BitRain() {
           if (y < -size || y > h + size) continue
           const near = Math.max(0, 1 - Math.hypot(c.x - pointer.x, y - pointer.y) / 160)
           const fade = 1 - j / c.len
-          const a = j === 0 ? .85 : fade * .32 * c.depth + near * .45
-          ctx.fillStyle = j === 0 ? `rgba(214, 242, 255, ${a})` : `rgba(64, 170, 255, ${a})`
+          const a = j === 0 ? .9 : fade * .38 * c.depth + near * .5
+          ctx.fillStyle = j === 0 ? `rgba(224, 242, 254, ${a})` : `rgba(56, 189, 248, ${a})`
           ctx.fillText(glyphs[(c.seed + j * 7 + Math.floor(c.y / size)) % glyphs.length], c.x, y)
         }
       }
