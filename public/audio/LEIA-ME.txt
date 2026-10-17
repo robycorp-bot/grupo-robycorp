@@ -1,0 +1,6 @@
+Coloque aqui o arquivo da trilha de fundo com o nome: trilha.mp3
+
+O site detecta o arquivo sozinho. Enquanto ele não existir, o loader mostra
+apenas o botão "Entrar" e o botão de som não aparece.
+
+Use somente um áudio que você tenha licença para usar no site.

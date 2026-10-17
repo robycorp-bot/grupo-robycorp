@@ -1,6 +1,6 @@
-# Robycorp
+# robinho.dev
 
-Landing page institucional da Robycorp, empresa de tecnologia. O site apresenta as soluções, o processo de trabalho e os canais de contato em uma experiência responsiva, feita com React, Vite e CSS.
+Landing page da marca robinho.dev, do desenvolvedor Robinho. O site apresenta as soluções, os planos e valores, o processo de trabalho e os canais de contato em uma experiência responsiva, feita com React, Vite e CSS.
 
 ## Executar localmente
 
@@ -21,7 +21,7 @@ O Vite cria a versão pronta para hospedagem na pasta `dist/`.
 
 ```text
 src/
-  assets/images/  Identidade visual da Robycorp
+  assets/images/  Identidade visual do robinho.dev
   main.jsx        Conteúdo e comportamento da página
   styles.css      Tema, componentes e layout responsivo
 index.html        Metadados, favicon e ponto de entrada
@@ -30,3 +30,7 @@ index.html        Metadados, favicon e ponto de entrada
 ## Contato
 
 O telefone para WhatsApp e ligações está definido no início de `src/main.jsx`. O link do Instagram fica no rodapé do mesmo arquivo.
+
+## Direção visual
+
+A direção atual usa grafite, verde suave e superfícies claras, com interfaces interativas e movimentos de entrada coordenados. As decisões estão em [docs/ux-estudio-digital.md](docs/ux-estudio-digital.md). As artes e os prompts da direção anterior permanecem preservados em [docs/direcao-visual.md](docs/direcao-visual.md).
