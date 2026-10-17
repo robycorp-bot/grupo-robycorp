@@ -154,18 +154,31 @@ function useMotion() {
     let frame = 0
     const update = () => {
       frame = 0
+      // Performance optimization: Batch DOM layout reads before DOM style writes to eliminate forced synchronous layout (layout thrashing) on every scroll frame.
       const height = document.documentElement.scrollHeight - innerHeight
-      document.documentElement.style.setProperty('--scroll', height > 0 ? scrollY / height : 0)
-      stages.forEach(el => {
+      const scrollRatio = height > 0 ? scrollY / height : 0
+
+      // Batch 1: READ - Query element geometries in a single pass
+      const stageProgress = stages.map(el => {
         const top = el.getBoundingClientRect().top
         const p = reduced.matches ? 1 : Math.min(1, Math.max(0, (innerHeight - top) / (innerHeight * .78)))
-        el.style.setProperty('--stage', p.toFixed(3))
+        return p.toFixed(3)
       })
-      /* Painéis de tinta: a pincelada atravessa da esquerda para a direita ao entrar na tela */
-      inks.forEach(el => {
+
+      const inkProgress = inks.map(el => {
         const top = el.getBoundingClientRect().top
         const p = reduced.matches ? 1 : Math.min(1, Math.max(0, (innerHeight * 1.02 - top) / (innerHeight * .62)))
-        el.style.setProperty('--ink', p.toFixed(3))
+        return p.toFixed(3)
+      })
+
+      // Batch 2: WRITE - Apply computed CSS custom properties after all reads complete
+      document.documentElement.style.setProperty('--scroll', scrollRatio)
+      stages.forEach((el, i) => {
+        el.style.setProperty('--stage', stageProgress[i])
+      })
+      /* Painéis de tinta: a pincelada atravessa da esquerda para a direita ao entrar na tela */
+      inks.forEach((el, i) => {
+        el.style.setProperty('--ink', inkProgress[i])
       })
     }
     const request = () => { if (!frame) frame = requestAnimationFrame(update) }
